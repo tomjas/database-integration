@@ -8,7 +8,7 @@ Transfer to MongoDB is triggered by executing endpoint (see below).
 
 ### Prerequisites
 
-Java 17, installed and configured MySQL/MariaDB and MongoDB according to application.properties settings.
+Java 17, installed and configured MySQL/MariaDB and MongoDB according to `application.properties` settings.
 
 ### Exposed endpoints
 
