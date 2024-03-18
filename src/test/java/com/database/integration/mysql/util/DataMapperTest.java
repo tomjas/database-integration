@@ -1,7 +1,7 @@
 package com.database.integration.mysql.util;
 
-import com.database.integration.mysql.importer.SwCharacterDto;
-import com.database.integration.mysql.importer.SwCharacterListDto;
+import com.database.integration.mysql.importer.dto.SwCharacterDto;
+import com.database.integration.mysql.importer.dto.SwCharacterListDto;
 import com.database.integration.mysql.model.Homeworld;
 import org.junit.jupiter.api.Test;
 

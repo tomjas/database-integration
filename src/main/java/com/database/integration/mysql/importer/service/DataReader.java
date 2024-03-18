@@ -1,5 +1,6 @@
-package com.database.integration.mysql.importer;
+package com.database.integration.mysql.importer.service;
 
+import com.database.integration.mysql.importer.dto.SwCharacterListDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

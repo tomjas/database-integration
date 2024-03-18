@@ -1,4 +1,4 @@
-package com.database.integration.mysql.importer;
+package com.database.integration.mysql.importer.dto;
 
 import lombok.Data;
 

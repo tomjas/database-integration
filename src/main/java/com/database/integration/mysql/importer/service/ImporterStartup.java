@@ -1,4 +1,4 @@
-package com.database.integration.mysql.importer;
+package com.database.integration.mysql.importer.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ImporterStartup implements CommandLineRunner {
 
-    private DataReader reader;
+    private ImporterService importerService;
 
     @Override
     public void run(String... args) throws Exception {
-        SwCharacterListDto data = reader.read();
-        log.debug("{}", data);
+        importerService.persist();
     }
 }
