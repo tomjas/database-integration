@@ -5,23 +5,42 @@ import com.database.integration.mysql.importer.dto.CharacterDto;
 import com.database.integration.mysql.importer.dto.CharacterListDto;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.model.MysqlHomeworld;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DataMapperTest {
 
+    private CharacterDto characterDto;
+    private MysqlCharacter mysqlCharacter;
+
+    @BeforeEach
+    void setUp() {
+        characterDto = new CharacterDto();
+        characterDto.setName("mr_twardowski");
+        characterDto.setPic("http://test_pic.jpg");
+        characterDto.setHomeworld("moon");
+
+        mysqlCharacter = new MysqlCharacter();
+        mysqlCharacter.setId(1L);
+        mysqlCharacter.setName("mr_twardowski");
+        mysqlCharacter.setPictureUrl("http://test_pic.jpg");
+
+        MysqlHomeworld homeworld = new MysqlHomeworld();
+        homeworld.setId(2L);
+        homeworld.setName("moon");
+        mysqlCharacter.setHomeworld(homeworld);
+    }
+
     @Test
-    void map() {
+    void shouldMapCharacterListDtoToListOfMysqlHomeworld() {
         CharacterListDto listDto = new CharacterListDto();
-        CharacterDto dto = new CharacterDto();
-        dto.setName("mr_twardowski");
-        dto.setPic("http://test_pic.jpg");
-        dto.setHomeworld("moon");
-        listDto.getCharacters().add(dto);
+        listDto.getCharacters().add(characterDto);
 
         List<MysqlHomeworld> expected = DataMapper.map(listDto);
         assertEquals(expected.size(), 1);
@@ -34,23 +53,28 @@ class DataMapperTest {
     }
 
     @Test
-    void mysqlToMongo() {
-        MysqlCharacter mysqlCharacter = new MysqlCharacter();
-        mysqlCharacter.setId(1L);
-        mysqlCharacter.setName("mr_twardowski");
-        mysqlCharacter.setPictureUrl("http://test_pic.jpg");
-
-        MysqlHomeworld homeworld = new MysqlHomeworld();
-        homeworld.setId(2L);
-        homeworld.setName("moon");
-
-        mysqlCharacter.setHomeworld(homeworld);
+    void mysqlToMongoList() {
         List<MonogCharacter> expected = DataMapper.mysqlToMongo(Collections.singletonList(mysqlCharacter));
-
         assertEquals(expected.size(), 1);
-//        assertEquals(expected.get(0).getId(), 1L);
         assertEquals(expected.get(0).getName(), "mr_twardowski");
         assertEquals(expected.get(0).getPictureUrl(), "http://test_pic.jpg");
         assertEquals(expected.get(0).getHomeworld(), "moon");
+    }
+
+    @Test
+    void shouldMapCharacterDtoToMysqlCharacter() {
+        MysqlCharacter expected = DataMapper.map(characterDto);
+        assertEquals(expected.getName(), "mr_twardowski");
+        assertEquals(expected.getPictureUrl(), "http://test_pic.jpg");
+        assertNotNull(expected.getHomeworld());
+        assertEquals(expected.getHomeworld().getName(), "moon");
+    }
+
+    @Test
+    void testMysqlToMongoSingle() {
+        MonogCharacter expected = DataMapper.mysqlToMongo(mysqlCharacter);
+        assertEquals(expected.getName(), "mr_twardowski");
+        assertEquals(expected.getPictureUrl(), "http://test_pic.jpg");
+        assertEquals(expected.getHomeworld(), "moon");
     }
 }

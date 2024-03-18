@@ -21,28 +21,40 @@ public final class DataMapper {
         Map<String, MysqlHomeworld> homeworldMap = new HashMap<>();
         for (CharacterDto characterDto : listDto.getCharacters()) {
             homeworldMap.computeIfAbsent(characterDto.getHomeworld(), v -> new MysqlHomeworld()).setName(characterDto.getHomeworld());
-            MysqlCharacter mysqlCharacter = getSwCharacter(characterDto, homeworldMap);
+            MysqlCharacter mysqlCharacter = getSwCharacter(characterDto, homeworldMap.get(characterDto.getHomeworld()));
             homeworldMap.get(characterDto.getHomeworld()).getCharacters().add(mysqlCharacter);
         }
         return new ArrayList<>(homeworldMap.values());
     }
 
-    private static MysqlCharacter getSwCharacter(CharacterDto characterDto, Map<String, MysqlHomeworld> homeworldMap) {
+    public static MysqlCharacter map(CharacterDto dto) {
+        MysqlHomeworld homeworld = MysqlHomeworld.builder()
+                .name(dto.getHomeworld())
+                .build();
+        return getSwCharacter(dto, homeworld);
+    }
+
+    private static MysqlCharacter getSwCharacter(CharacterDto characterDto, MysqlHomeworld homeworld) {
         return MysqlCharacter.builder()
                 .name(characterDto.getName())
                 .pictureUrl(characterDto.getPic())
-                .homeworld(homeworldMap.get(characterDto.getHomeworld()))
+                .homeworld(homeworld)
                 .build();
     }
 
     public static List<MonogCharacter> mysqlToMongo(List<MysqlCharacter> mysqlCharacters) {
         return mysqlCharacters
                 .stream()
-                .map(v -> MonogCharacter.builder()
-                        .name(v.getName())
-                        .pictureUrl(v.getPictureUrl())
-                        .homeworld(v.getHomeworld().getName())
-                        .build())
+                .map(DataMapper::mysqlToMongo)
                 .collect(Collectors.toList());
     }
+
+    public static MonogCharacter mysqlToMongo(MysqlCharacter mysqlCharacter) {
+        return MonogCharacter.builder()
+                .name(mysqlCharacter.getName())
+                .pictureUrl(mysqlCharacter.getPictureUrl())
+                .homeworld(mysqlCharacter.getHomeworld().getName())
+                .build();
+    }
+
 }
