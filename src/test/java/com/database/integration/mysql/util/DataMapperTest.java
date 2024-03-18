@@ -22,8 +22,8 @@ class DataMapperTest {
 
         List<Homeworld> expected = DataMapper.map(listDto);
         assertEquals(expected.get(0).getName(), "moon");
-        assertEquals(expected.get(0).getSwCharacters().get(0).getHomeworld().getName(), "moon");
-        assertEquals(expected.get(0).getSwCharacters().get(0).getName(), "test_name");
-        assertEquals(expected.get(0).getSwCharacters().get(0).getPictureUrl(), "http://test_pic.jpg");
+        assertEquals(expected.get(0).getCharacters().get(0).getHomeworld().getName(), "moon");
+        assertEquals(expected.get(0).getCharacters().get(0).getName(), "test_name");
+        assertEquals(expected.get(0).getCharacters().get(0).getPictureUrl(), "http://test_pic.jpg");
     }
 }

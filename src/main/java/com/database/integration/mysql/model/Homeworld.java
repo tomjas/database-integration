@@ -34,5 +34,5 @@ public class Homeworld {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "homeworld")
     @JsonIgnoreProperties("homeworld")
-    private List<SwCharacter> swCharacters = new ArrayList<>();
+    private List<MysqlCharacter> characters = new ArrayList<>();
 }

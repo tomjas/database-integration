@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "sw_character")
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @Data
-public class SwCharacter {
+public class MysqlCharacter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +37,7 @@ public class SwCharacter {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="sw_homeworld_id")
-    @JsonIgnoreProperties("swCharacters")
+    @JsonIgnoreProperties("characters")
     private Homeworld homeworld;
 
 }

@@ -1,8 +1,8 @@
 package com.database.integration.controller;
 
+import com.database.integration.mysql.importer.service.MysqlCharacterService;
 import com.database.integration.mysql.model.Homeworld;
-import com.database.integration.mysql.model.SwCharacter;
-import com.database.integration.service.CharacterService;
+import com.database.integration.mysql.model.MysqlCharacter;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 public class CharacterController {
 
-    private CharacterService service;
+    private MysqlCharacterService service;
 
     @GetMapping(value = "/characters")
-    public List<SwCharacter> getCharacters() {
+    public List<MysqlCharacter> getCharacters() {
         return service.getCharacters();
     }
 

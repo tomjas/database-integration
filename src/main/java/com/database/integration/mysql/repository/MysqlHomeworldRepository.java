@@ -1,9 +1,9 @@
 package com.database.integration.mysql.repository;
 
-import com.database.integration.mysql.model.SwCharacter;
+import com.database.integration.mysql.model.Homeworld;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CharacterRepository extends JpaRepository<SwCharacter, Long> {
+public interface MysqlHomeworldRepository extends JpaRepository<Homeworld, Long> {
 }
