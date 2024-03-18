@@ -7,6 +7,7 @@ import com.database.integration.mysql.importer.dto.CharacterDto;
 import com.database.integration.mysql.importer.service.MysqlCharacterService;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.model.MysqlHomeworld;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,12 +49,12 @@ public class CharacterController {
     }
 
     @PostMapping(value = "/mysql/add")
-    public MysqlCharacter add(@RequestBody CharacterDto dto) {
+    public MysqlCharacter add(@Valid @RequestBody CharacterDto dto) {
         return mysqlCharacterService.add(dto);
     }
 
     @PutMapping(value = "/mysql/characters/{id}")
-    public MysqlCharacter update(@RequestBody CharacterDto dto, @PathVariable Long id) {
+    public MysqlCharacter update(@Valid @RequestBody CharacterDto dto, @PathVariable Long id) {
         //TODO
         return null;
     }
