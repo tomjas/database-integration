@@ -14,6 +14,8 @@ public class ImporterStartup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        //TODO import data on request
+        //TODO merge data if they already exist
         importerService.persist();
     }
 }

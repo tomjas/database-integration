@@ -1,5 +1,8 @@
 package com.database.integration.controller;
 
+import com.database.integration.mongodb.model.MonogCharacter;
+import com.database.integration.mongodb.service.IntegrationService;
+import com.database.integration.mongodb.service.MongoCharacterService;
 import com.database.integration.mysql.importer.service.MysqlCharacterService;
 import com.database.integration.mysql.model.MysqlHomeworld;
 import com.database.integration.mysql.model.MysqlCharacter;
@@ -15,15 +18,27 @@ import java.util.List;
 @AllArgsConstructor
 public class CharacterController {
 
-    private MysqlCharacterService service;
+    private MysqlCharacterService mysqlCharacterService;
+    private MongoCharacterService mongoCharacterService;
+    private IntegrationService integrationService;
 
-    @GetMapping(value = "/characters")
-    public List<MysqlCharacter> getCharacters() {
-        return service.getCharacters();
+    @GetMapping(value = "/mysql/characters")
+    public List<MysqlCharacter> getMysqlCharacters() {
+        return mysqlCharacterService.getCharacters();
     }
 
-    @GetMapping(value = "/homeworlds")
-    public List<MysqlHomeworld> getHomeworlds() {
-        return service.getHomeworlds();
+    @GetMapping(value = "/mysql/homeworlds")
+    public List<MysqlHomeworld> getMysqlHomeworlds() {
+        return mysqlCharacterService.getHomeworlds();
+    }
+
+    @GetMapping(value = "/mongo/characters")
+    public List<MonogCharacter> getMongoCharacters() {
+        return mongoCharacterService.getCharacters();
+    }
+
+    @GetMapping(value = "/transfer")
+    public void transfer() {
+        integrationService.transfer();
     }
 }
