@@ -23,7 +23,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Data
-public class Homeworld {
+public class MysqlHomeworld {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

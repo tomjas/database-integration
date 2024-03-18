@@ -1,6 +1,6 @@
 package com.database.integration.mysql.importer.service;
 
-import com.database.integration.mysql.model.Homeworld;
+import com.database.integration.mysql.model.MysqlHomeworld;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.repository.MysqlCharacterRepository;
 import com.database.integration.mysql.repository.MysqlHomeworldRepository;
@@ -23,7 +23,7 @@ public class MysqlCharacterService {
     }
 
     @Transactional
-    public List<Homeworld> getHomeworlds() {
+    public List<MysqlHomeworld> getHomeworlds() {
         return homeworldRepository.findAll();
     }
 

@@ -1,7 +1,7 @@
 package com.database.integration.controller;
 
 import com.database.integration.mysql.importer.service.MysqlCharacterService;
-import com.database.integration.mysql.model.Homeworld;
+import com.database.integration.mysql.model.MysqlHomeworld;
 import com.database.integration.mysql.model.MysqlCharacter;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ public class CharacterController {
     }
 
     @GetMapping(value = "/homeworlds")
-    public List<Homeworld> getHomeworlds() {
+    public List<MysqlHomeworld> getHomeworlds() {
         return service.getHomeworlds();
     }
 }
