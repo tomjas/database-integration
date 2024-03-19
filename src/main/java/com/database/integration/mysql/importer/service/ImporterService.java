@@ -24,7 +24,13 @@ public class ImporterService {
     public void persist() throws IOException {
         CharacterListDto characterListDto = reader.read();
         List<MysqlHomeworld> mysqlHomeworlds = DataMapper.map(characterListDto);
-        mysqlHomeworldRepository.saveAll(mysqlHomeworlds);
+        for (MysqlHomeworld mysqlHomeworld : mysqlHomeworlds) {
+            mysqlHomeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v -> {
+                mysqlHomeworld.setId(v.getId());
+                mysqlHomeworld.setCharacters(v.getCharacters());
+            });
+            mysqlHomeworldRepository.save(mysqlHomeworld);
+        }
         log.debug("Imported {} homewrolds with {} Star Wars characters", mysqlHomeworlds.size(), mysqlHomeworlds.stream()
                 .flatMap(v -> v.getCharacters().stream()).toList().size());
     }

@@ -28,33 +28,22 @@ public final class DataMapper {
     }
 
     public static MysqlCharacter map(CharacterDto dto) {
-        MysqlHomeworld homeworld = MysqlHomeworld.builder()
-                .name(dto.getHomeworld())
-                .build();
+        MysqlHomeworld homeworld = HomeworldMapper.INSTANCE.map(dto.getHomeworld());
         return getSwCharacter(dto, homeworld);
     }
 
     private static MysqlCharacter getSwCharacter(CharacterDto characterDto, MysqlHomeworld homeworld) {
-        return MysqlCharacter.builder()
-                .name(characterDto.getName())
-                .pictureUrl(characterDto.getPic())
-                .homeworld(homeworld)
-                .build();
+        MysqlCharacter result = CharacterMapper.INSTANCE.characterDtoToMysql(characterDto);
+        result.setHomeworld(homeworld);
+        return result;
     }
 
     public static List<MonogCharacter> mysqlToMongo(List<MysqlCharacter> mysqlCharacters) {
-        return mysqlCharacters
-                .stream()
-                .map(DataMapper::mysqlToMongo)
-                .collect(Collectors.toList());
+        return mysqlCharacters.stream().map(DataMapper::mysqlToMongo).collect(Collectors.toList());
     }
 
     public static MonogCharacter mysqlToMongo(MysqlCharacter mysqlCharacter) {
-        return MonogCharacter.builder()
-                .name(mysqlCharacter.getName())
-                .pictureUrl(mysqlCharacter.getPictureUrl())
-                .homeworld(mysqlCharacter.getHomeworld().getName())
-                .build();
+        return CharacterMapper.INSTANCE.mysqlToMongo(mysqlCharacter);
     }
 
 }

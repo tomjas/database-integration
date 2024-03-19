@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "sw_character")
@@ -37,6 +38,7 @@ public class MysqlCharacter {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="sw_homeworld_id")
     @JsonIgnoreProperties("characters")
+    @ToString.Exclude
     private MysqlHomeworld homeworld;
 
 }
