@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface CharacterMapper {
 
@@ -20,4 +22,6 @@ public interface CharacterMapper {
     @Mapping(source = "character.homeworld.name", target = "homeworld")
     @Mapping(target = "id", ignore = true)
     MonogCharacter mysqlToMongo(MysqlCharacter character);
+
+    List<MonogCharacter> mysqlToMongo(List<MysqlCharacter> mysqlCharacters);
 }
