@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Slf4j
+//TODO integration via Kafka
 public class IntegrationService {
 
     private MysqlCharacterRepository mysqlRepository;
