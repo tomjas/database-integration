@@ -19,10 +19,10 @@ public final class DataMapper {
 
     public static List<MysqlHomeworld> map(CharacterListDto listDto) {
         Map<String, MysqlHomeworld> homeworldMap = new HashMap<>();
-        for (CharacterDto characterDto : listDto.getCharacters()) {
-            homeworldMap.computeIfAbsent(characterDto.getHomeworld(), v -> new MysqlHomeworld()).setName(characterDto.getHomeworld());
-            MysqlCharacter mysqlCharacter = map(characterDto, homeworldMap.get(characterDto.getHomeworld()));
-            homeworldMap.get(characterDto.getHomeworld()).getCharacters().add(mysqlCharacter);
+        for (CharacterDto characterDto : listDto.characters()) {
+            homeworldMap.computeIfAbsent(characterDto.homeworld(), v -> new MysqlHomeworld()).setName(characterDto.homeworld());
+            MysqlCharacter mysqlCharacter = map(characterDto, homeworldMap.get(characterDto.homeworld()));
+            homeworldMap.get(characterDto.homeworld()).getCharacters().add(mysqlCharacter);
         }
         return new ArrayList<>(homeworldMap.values());
     }
@@ -34,7 +34,7 @@ public final class DataMapper {
     private static MysqlCharacter map(CharacterDto characterDto, MysqlHomeworld homeworld) {
         MysqlCharacter result = CharacterMapper.INSTANCE.characterDtoToMysql(characterDto);
         if (Objects.isNull(homeworld)) {
-            homeworld = HomeworldMapper.INSTANCE.map(characterDto.getHomeworld());
+            homeworld = HomeworldMapper.INSTANCE.map(characterDto.homeworld());
         }
         result.setHomeworld(homeworld);
         return result;

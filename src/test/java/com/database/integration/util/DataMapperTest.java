@@ -8,6 +8,7 @@ import com.database.integration.mysql.model.MysqlHomeworld;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,10 +22,7 @@ class DataMapperTest {
 
     @BeforeEach
     void setUp() {
-        characterDto = new CharacterDto();
-        characterDto.setName("mr_twardowski");
-        characterDto.setPic("http://test_pic.jpg");
-        characterDto.setHomeworld("moon");
+        characterDto = new CharacterDto(0L, "mr_twardowski", "http://test_pic.jpg", "moon");
 
         mysqlCharacter = new MysqlCharacter();
         mysqlCharacter.setId(1L);
@@ -39,8 +37,8 @@ class DataMapperTest {
 
     @Test
     void shouldMapCharacterListDtoToListOfMysqlHomeworld() {
-        CharacterListDto listDto = new CharacterListDto();
-        listDto.getCharacters().add(characterDto);
+        CharacterListDto listDto = new CharacterListDto(new ArrayList<>());
+        listDto.characters().add(characterDto);
 
         List<MysqlHomeworld> expected = DataMapper.map(listDto);
         assertEquals(expected.size(), 1);
