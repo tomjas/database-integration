@@ -1,8 +1,8 @@
 package com.database.integration.mongodb.service;
 
 
-import com.database.integration.mongodb.model.MonogCharacter;
-import com.database.integration.mongodb.repository.MongoCharacterRepository;
+import com.database.integration.kafka.service.Producer;
+import com.database.integration.mysql.importer.dto.MonogCharacterDto;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.repository.MysqlCharacterRepository;
 import com.database.integration.util.DataMapper;
@@ -18,12 +18,12 @@ import java.util.List;
 public class IntegrationService {
 
     private final MysqlCharacterRepository mysqlRepository;
-    private final MongoCharacterRepository mongodbRepository;
+    private final Producer producer;
 
     public void transfer() {
         List<MysqlCharacter> mysqlCharacters = mysqlRepository.findAll();
-        List<MonogCharacter> monogCharacters = DataMapper.mysqlToMongo(mysqlCharacters);
-        mongodbRepository.saveAll(monogCharacters);
+        List<MonogCharacterDto> monogCharacterDtos = DataMapper.mysqlToMongo(mysqlCharacters);
+        monogCharacterDtos.forEach(producer::send);
     }
 
 }

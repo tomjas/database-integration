@@ -1,6 +1,6 @@
 package com.database.integration.kafka.service;
 
-import com.database.integration.mongodb.model.MonogCharacter;
+import com.database.integration.mysql.importer.dto.MonogCharacterDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,9 +13,9 @@ public class Producer {
     @Value("${kafka.topic}")
     private String topic;
 
-    private final KafkaTemplate<String, MonogCharacter> template;
+    private final KafkaTemplate<String, MonogCharacterDto> template;
 
-    public void send(MonogCharacter monogCharacter){
-        template.send(topic, monogCharacter);
+    public void send(MonogCharacterDto monogCharacterDto) {
+        template.send(topic, monogCharacterDto);
     }
 }

@@ -1,8 +1,8 @@
 package com.database.integration.util;
 
-import com.database.integration.mongodb.model.MonogCharacter;
 import com.database.integration.mysql.importer.dto.CharacterDto;
 import com.database.integration.mysql.importer.dto.CharacterListDto;
+import com.database.integration.mysql.importer.dto.MonogCharacterDto;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.model.MysqlHomeworld;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,11 +52,12 @@ class DataMapperTest {
 
     @Test
     void mysqlToMongoList() {
-        List<MonogCharacter> expected = DataMapper.mysqlToMongo(Collections.singletonList(mysqlCharacter));
+        List<MonogCharacterDto> expected = DataMapper.mysqlToMongo(Collections.singletonList(mysqlCharacter));
         assertEquals(expected.size(), 1);
         assertEquals(expected.get(0).getName(), "mr_twardowski");
         assertEquals(expected.get(0).getPictureUrl(), "http://test_pic.jpg");
         assertEquals(expected.get(0).getHomeworld(), "moon");
+        assertEquals(expected.get(0).getMysqlId(), 1L);
     }
 
     @Test
@@ -70,9 +71,31 @@ class DataMapperTest {
 
     @Test
     void testMysqlToMongoSingle() {
-        MonogCharacter expected = DataMapper.mysqlToMongo(mysqlCharacter);
+        MonogCharacterDto expected = DataMapper.mysqlToMongo(mysqlCharacter);
         assertEquals(expected.getName(), "mr_twardowski");
         assertEquals(expected.getPictureUrl(), "http://test_pic.jpg");
         assertEquals(expected.getHomeworld(), "moon");
+        assertEquals(expected.getMysqlId(), 1L);
+    }
+
+    @Test
+    void getHomeworld() {
+        String name = "moon";
+        MysqlHomeworld expected = DataMapper.getHomeworld(name);
+        assertEquals(expected.getName(), "moon");
+
+        name = null;
+        expected = DataMapper.getHomeworld(name);
+        assertNotNull(expected);
+    }
+
+    @Test
+    void getHomeworlds() {
+        CharacterListDto listDto = new CharacterListDto(new ArrayList<>());
+        listDto.characters().add(characterDto);
+        List<MysqlHomeworld> expected = DataMapper.getHomeworlds(listDto).stream().toList();
+
+        assertEquals(expected.size(), 1);
+        assertEquals(expected.get(0).getName(), "moon");
     }
 }

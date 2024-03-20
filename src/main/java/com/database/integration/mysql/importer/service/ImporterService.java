@@ -1,7 +1,9 @@
 package com.database.integration.mysql.importer.service;
 
 import com.database.integration.mysql.importer.dto.CharacterListDto;
+import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.model.MysqlHomeworld;
+import com.database.integration.mysql.repository.MysqlCharacterRepository;
 import com.database.integration.mysql.repository.MysqlHomeworldRepository;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -18,20 +21,31 @@ import java.util.List;
 public class ImporterService {
 
     private final DataReader reader;
-    private final MysqlHomeworldRepository mysqlHomeworldRepository;
+    private final MysqlHomeworldRepository homeworldRepository;
+    private final MysqlCharacterRepository characterRepository;
 
     @Transactional
-    public void persist() throws IOException {
+    public Set<MysqlCharacter> persist() throws IOException {
         CharacterListDto characterListDto = reader.read();
-        List<MysqlHomeworld> mysqlHomeworlds = DataMapper.map(characterListDto);
+        Set<MysqlHomeworld> mysqlHomeworlds = DataMapper.getHomeworlds(characterListDto);
         for (MysqlHomeworld mysqlHomeworld : mysqlHomeworlds) {
-            mysqlHomeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v -> {
-                mysqlHomeworld.setId(v.getId());
-                mysqlHomeworld.setCharacters(v.getCharacters());
-            });
-            mysqlHomeworldRepository.save(mysqlHomeworld);
+            MysqlHomeworld finalMysqlHomeworld = mysqlHomeworld;
+            homeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v ->
+                    finalMysqlHomeworld.setId(v.getId())
+            );
+            mysqlHomeworld = homeworldRepository.save(finalMysqlHomeworld);
         }
-        log.debug("Imported {} homewrolds with {} Star Wars characters", mysqlHomeworlds.size(), mysqlHomeworlds.stream()
-                .flatMap(v -> v.getCharacters().stream()).toList().size());
+
+        Map<String, MysqlHomeworld> homeworldMap = DataMapper.asMap(mysqlHomeworlds);
+        Set<MysqlCharacter> characters = DataMapper.getSwCharacters(characterListDto, homeworldMap);
+        for (MysqlCharacter character : characters) {
+            MysqlCharacter finalCharacter = character;
+            characterRepository.findByName(character.getName()).ifPresent(v -> finalCharacter.setId(v.getId()));
+            character = characterRepository.save(finalCharacter);
+        }
+
+        log.debug("Imported {} homewrolds and {} Star Wars characters", mysqlHomeworlds.size(), characters.size());
+
+        return characters;
     }
 }

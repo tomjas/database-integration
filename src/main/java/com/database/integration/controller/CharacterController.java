@@ -1,8 +1,5 @@
 package com.database.integration.controller;
 
-import com.database.integration.mongodb.model.MonogCharacter;
-import com.database.integration.mongodb.service.IntegrationService;
-import com.database.integration.mongodb.service.MongoCharacterService;
 import com.database.integration.mysql.importer.dto.CharacterDto;
 import com.database.integration.mysql.importer.service.MysqlCharacterService;
 import com.database.integration.mysql.model.MysqlCharacter;
@@ -25,8 +22,6 @@ import java.util.List;
 public class CharacterController {
 
     private final MysqlCharacterService mysqlCharacterService;
-    private final MongoCharacterService mongoCharacterService;
-    private final IntegrationService integrationService;
 
     @GetMapping(value = "/mysql/characters")
     public List<MysqlCharacter> getMysqlCharacters() {
@@ -36,16 +31,6 @@ public class CharacterController {
     @GetMapping(value = "/mysql/homeworlds")
     public List<MysqlHomeworld> getMysqlHomeworlds() {
         return mysqlCharacterService.getHomeworlds();
-    }
-
-    @GetMapping(value = "/mongo/characters")
-    public List<MonogCharacter> getMongoCharacters() {
-        return mongoCharacterService.getCharacters();
-    }
-
-    @GetMapping(value = "/transfer")
-    public void transfer() {
-        integrationService.transfer();
     }
 
     @PostMapping(value = "/mysql/add")

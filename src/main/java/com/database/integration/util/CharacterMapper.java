@@ -1,7 +1,7 @@
 package com.database.integration.util;
 
-import com.database.integration.mongodb.model.MonogCharacter;
 import com.database.integration.mysql.importer.dto.CharacterDto;
+import com.database.integration.mysql.importer.dto.MonogCharacterDto;
 import com.database.integration.mysql.model.MysqlCharacter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,8 +20,8 @@ public interface CharacterMapper {
     MysqlCharacter characterDtoToMysql(CharacterDto dto);
 
     @Mapping(source = "character.homeworld.name", target = "homeworld")
-    @Mapping(target = "id", ignore = true)
-    MonogCharacter mysqlToMongo(MysqlCharacter character);
+    @Mapping(target = "mysqlId", source = "id")
+    MonogCharacterDto mysqlToMongo(MysqlCharacter character);
 
-    List<MonogCharacter> mysqlToMongo(List<MysqlCharacter> mysqlCharacters);
+    List<MonogCharacterDto> mysqlToMongo(List<MysqlCharacter> mysqlCharacters);
 }

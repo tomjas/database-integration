@@ -4,6 +4,9 @@ import com.database.integration.mysql.model.MysqlCharacter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MysqlCharacterRepository extends JpaRepository<MysqlCharacter, Long> {
+    Optional<MysqlCharacter> findByName(String name);
 }

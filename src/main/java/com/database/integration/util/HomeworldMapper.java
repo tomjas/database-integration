@@ -5,6 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Set;
+
 @Mapper
 public interface HomeworldMapper {
 
@@ -12,4 +14,6 @@ public interface HomeworldMapper {
 
     @Mapping(source = "string", target = "name")
     MysqlHomeworld map(String string);
+
+    Set<MysqlHomeworld> map(Set<String> names);
 }
