@@ -1,5 +1,6 @@
 package com.database.integration.mysql.importer.service;
 
+import com.database.integration.kafka.service.Producer;
 import com.database.integration.mongodb.model.MonogCharacter;
 import com.database.integration.mongodb.repository.MongoCharacterRepository;
 import com.database.integration.mysql.importer.dto.CharacterDto;
@@ -21,6 +22,7 @@ public class MysqlCharacterService {
     private MysqlCharacterRepository characterRepository;
     private MysqlHomeworldRepository homeworldRepository;
     private MongoCharacterRepository mongoCharacterRepository;
+    private Producer kafkaProducer;
 
     @Transactional
     public List<MysqlCharacter> getCharacters() {
@@ -37,8 +39,12 @@ public class MysqlCharacterService {
         MysqlCharacter mysqlCharacter = DataMapper.map(dto);
         characterRepository.save(mysqlCharacter);
 
+        //TODO mongodb integration by kafka cosumer in separate project
         MonogCharacter mongoCharacter = DataMapper.mysqlToMongo(mysqlCharacter);
         mongoCharacterRepository.save(mongoCharacter);
+
+        kafkaProducer.send(mongoCharacter);
+
         return mysqlCharacter;
     }
 }
