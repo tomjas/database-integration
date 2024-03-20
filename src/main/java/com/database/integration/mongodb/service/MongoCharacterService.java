@@ -2,16 +2,16 @@ package com.database.integration.mongodb.service;
 
 import com.database.integration.mongodb.model.MonogCharacter;
 import com.database.integration.mongodb.repository.MongoCharacterRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class MongoCharacterService {
 
-    private MongoCharacterRepository characterRepository;
+    private final MongoCharacterRepository characterRepository;
 
     public List<MonogCharacter> getCharacters() {
         return characterRepository.findAll();

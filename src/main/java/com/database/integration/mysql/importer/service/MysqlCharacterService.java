@@ -9,20 +9,20 @@ import com.database.integration.mysql.model.MysqlHomeworld;
 import com.database.integration.mysql.repository.MysqlCharacterRepository;
 import com.database.integration.mysql.repository.MysqlHomeworldRepository;
 import com.database.integration.util.DataMapper;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MysqlCharacterService {
 
-    private MysqlCharacterRepository characterRepository;
-    private MysqlHomeworldRepository homeworldRepository;
-    private MongoCharacterRepository mongoCharacterRepository;
-    private Producer kafkaProducer;
+    private final MysqlCharacterRepository characterRepository;
+    private final MysqlHomeworldRepository homeworldRepository;
+    private final MongoCharacterRepository mongoCharacterRepository;
+    private final Producer kafkaProducer;
 
     @Transactional
     public List<MysqlCharacter> getCharacters() {

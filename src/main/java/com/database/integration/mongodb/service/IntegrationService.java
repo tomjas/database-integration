@@ -6,20 +6,19 @@ import com.database.integration.mongodb.repository.MongoCharacterRepository;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.repository.MysqlCharacterRepository;
 import com.database.integration.util.DataMapper;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
-//TODO integration via Kafka
 public class IntegrationService {
 
-    private MysqlCharacterRepository mysqlRepository;
-    private MongoCharacterRepository mongodbRepository;
+    private final MysqlCharacterRepository mysqlRepository;
+    private final MongoCharacterRepository mongodbRepository;
 
     public void transfer() {
         List<MysqlCharacter> mysqlCharacters = mysqlRepository.findAll();

@@ -36,7 +36,7 @@ public class MysqlCharacter {
     private String pictureUrl;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="sw_homeworld_id")
+    @JoinColumn(name = "sw_homeworld_id")
     @JsonIgnoreProperties("characters")
     @ToString.Exclude
     private MysqlHomeworld homeworld;

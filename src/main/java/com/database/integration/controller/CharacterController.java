@@ -8,7 +8,7 @@ import com.database.integration.mysql.importer.service.MysqlCharacterService;
 import com.database.integration.mysql.model.MysqlCharacter;
 import com.database.integration.mysql.model.MysqlHomeworld;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +21,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1.0")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CharacterController {
 
-    private MysqlCharacterService mysqlCharacterService;
-    private MongoCharacterService mongoCharacterService;
-    private IntegrationService integrationService;
+    private final MysqlCharacterService mysqlCharacterService;
+    private final MongoCharacterService mongoCharacterService;
+    private final IntegrationService integrationService;
 
     @GetMapping(value = "/mysql/characters")
     public List<MysqlCharacter> getMysqlCharacters() {
