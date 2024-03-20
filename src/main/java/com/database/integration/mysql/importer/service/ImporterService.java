@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,32 +21,27 @@ import java.util.Set;
 @Slf4j
 public class ImporterService {
 
-    private final DataReader reader;
     private final MysqlHomeworldRepository homeworldRepository;
     private final MysqlCharacterRepository characterRepository;
 
     @Transactional
-    public Set<MysqlCharacter> persist() throws IOException {
-        CharacterListDto characterListDto = reader.read();
+    public void persist(CharacterListDto characterListDto) {
         Set<MysqlHomeworld> mysqlHomeworlds = DataMapper.getHomeworlds(characterListDto);
+        Set<MysqlHomeworld> persistedSet = new HashSet<>();
         for (MysqlHomeworld mysqlHomeworld : mysqlHomeworlds) {
-            MysqlHomeworld finalMysqlHomeworld = mysqlHomeworld;
             homeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v ->
-                    finalMysqlHomeworld.setId(v.getId())
+                    mysqlHomeworld.setId(v.getId())
             );
-            mysqlHomeworld = homeworldRepository.save(finalMysqlHomeworld);
+            MysqlHomeworld persisted = homeworldRepository.save(mysqlHomeworld);
+            persistedSet.add(persisted);
         }
 
-        Map<String, MysqlHomeworld> homeworldMap = DataMapper.asMap(mysqlHomeworlds);
-        Set<MysqlCharacter> characters = DataMapper.getSwCharacters(characterListDto, homeworldMap);
+        Map<String, MysqlHomeworld> homeworldMap = DataMapper.asMap(persistedSet);
+        Set<MysqlCharacter> characters = DataMapper.asMysqlCharacters(characterListDto, homeworldMap);
         for (MysqlCharacter character : characters) {
-            MysqlCharacter finalCharacter = character;
-            characterRepository.findByName(character.getName()).ifPresent(v -> finalCharacter.setId(v.getId()));
-            character = characterRepository.save(finalCharacter);
+            characterRepository.findByName(character.getName()).ifPresent(v -> character.setId(v.getId()));
         }
 
-        log.debug("Imported {} homewrolds and {} Star Wars characters", mysqlHomeworlds.size(), characters.size());
-
-        return characters;
+        log.debug("Imported {} homewrolds and {} Star Wars characters", persistedSet.size(), characters.size());
     }
 }

@@ -4,7 +4,6 @@ package com.database.integration.mongodb.service;
 import com.database.integration.kafka.service.Producer;
 import com.database.integration.mysql.importer.dto.MonogCharacterDto;
 import com.database.integration.mysql.model.MysqlCharacter;
-import com.database.integration.mysql.repository.MysqlCharacterRepository;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +16,15 @@ import java.util.List;
 @Slf4j
 public class IntegrationService {
 
-    private final MysqlCharacterRepository mysqlRepository;
     private final Producer producer;
 
-    public void transfer() {
-        List<MysqlCharacter> mysqlCharacters = mysqlRepository.findAll();
+    public void send(List<MysqlCharacter> mysqlCharacters) {
         List<MonogCharacterDto> monogCharacterDtos = DataMapper.mysqlToMongo(mysqlCharacters);
         monogCharacterDtos.forEach(producer::send);
     }
 
+    public void send(MysqlCharacter mysqlCharacter) {
+        MonogCharacterDto mongoCharacter = DataMapper.mysqlToMongo(mysqlCharacter);
+        producer.send(mongoCharacter);
+    }
 }
