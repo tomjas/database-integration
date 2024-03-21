@@ -40,8 +40,7 @@ public class CharacterController {
 
     @PutMapping(value = "/mysql/characters/{id}")
     public MysqlCharacter update(@Valid @RequestBody CharacterDto dto, @PathVariable Long id) {
-        //TODO
-        return null;
+        return mysqlCharacterService.update(dto, id);
     }
 
 }

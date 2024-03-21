@@ -35,7 +35,7 @@ public final class DataMapper {
         return map(dto, null);
     }
 
-    private static MysqlCharacter map(CharacterDto characterDto, MysqlHomeworld homeworld) {
+    public static MysqlCharacter map(CharacterDto characterDto, MysqlHomeworld homeworld) {
         MysqlCharacter result = CharacterMapper.INSTANCE.characterDtoToMysql(characterDto);
         if (Objects.isNull(homeworld)) {
             homeworld = HomeworldMapper.INSTANCE.map(characterDto.homeworld());

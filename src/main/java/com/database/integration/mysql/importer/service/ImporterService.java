@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,21 +26,27 @@ public class ImporterService {
     @Transactional
     public void persist(CharacterListDto characterListDto) {
         Set<MysqlHomeworld> mysqlHomeworlds = DataMapper.getHomeworlds(characterListDto);
-        Set<MysqlHomeworld> persistedSet = new HashSet<>();
-        for (MysqlHomeworld mysqlHomeworld : mysqlHomeworlds) {
-            homeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v ->
-                    mysqlHomeworld.setId(v.getId())
-            );
-            MysqlHomeworld persisted = homeworldRepository.save(mysqlHomeworld);
-            persistedSet.add(persisted);
-        }
+        Set<MysqlHomeworld> persistedHomeworlds = persistHomeworlds(mysqlHomeworlds);
+        Set<MysqlCharacter> persistedCharacters = persistCharacters(characterListDto, persistedHomeworlds);
+        log.debug("Imported Star Wars {} homewrolds and {} characters", persistedHomeworlds.size(), persistedCharacters.size());
+    }
 
+    private Set<MysqlCharacter> persistCharacters(CharacterListDto characterListDto, Set<MysqlHomeworld> persistedSet) {
         Map<String, MysqlHomeworld> homeworldMap = DataMapper.asMap(persistedSet);
         Set<MysqlCharacter> characters = DataMapper.asMysqlCharacters(characterListDto, homeworldMap);
         for (MysqlCharacter character : characters) {
             characterRepository.findByName(character.getName()).ifPresent(v -> character.setId(v.getId()));
         }
+        return characters;
+    }
 
-        log.debug("Imported {} homewrolds and {} Star Wars characters", persistedSet.size(), characters.size());
+    private Set<MysqlHomeworld> persistHomeworlds(Set<MysqlHomeworld> mysqlHomeworlds) {
+        Set<MysqlHomeworld> persistedSet = new HashSet<>();
+        for (MysqlHomeworld mysqlHomeworld : mysqlHomeworlds) {
+            homeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v -> mysqlHomeworld.setId(v.getId()));
+            MysqlHomeworld persisted = homeworldRepository.save(mysqlHomeworld);
+            persistedSet.add(persisted);
+        }
+        return persistedSet;
     }
 }

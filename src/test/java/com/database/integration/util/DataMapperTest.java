@@ -18,6 +18,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DataMapperTest {
@@ -135,5 +136,34 @@ class DataMapperTest {
 
 //        Map<String, MysqlHomeworld> expected = DataMapper.asMap(homeworlds);
 //        MysqlCharacter m1 = MysqlCharacter.builder().build();
+    }
+
+    @Test
+    void shouldMapWithoutHomeworldProvided(){
+        CharacterDto dto = new CharacterDto(1L, "mr_twardowski", "http://test_pic.jpg", null);
+        MysqlCharacter mysqlCharacter = DataMapper.map(dto);
+        assertEquals(mysqlCharacter.getName(), "mr_twardowski");
+        assertEquals(mysqlCharacter.getPictureUrl(), "http://test_pic.jpg");
+        assertNull(mysqlCharacter.getHomeworld());
+
+        dto = new CharacterDto(1L, "mr_twardowski", "http://test_pic.jpg", "moon");
+        MysqlHomeworld homeworld = MysqlHomeworld.builder().name("moon").build();
+        mysqlCharacter = DataMapper.map(dto);
+        assertEquals(mysqlCharacter.getName(), "mr_twardowski");
+        assertEquals(mysqlCharacter.getPictureUrl(), "http://test_pic.jpg");
+        assertEquals(mysqlCharacter.getHomeworld(), homeworld);
+
+    }
+
+    @Test
+    void shouldMapWithHomeworldProvided(){
+        CharacterDto dto = new CharacterDto(1L, "mr_twardowski", "http://test_pic.jpg", null);
+        MysqlHomeworld homeworld = MysqlHomeworld.builder().name("moon").build();
+        MysqlCharacter mysqlCharacter = DataMapper.map(dto);
+        mysqlCharacter.setHomeworld(homeworld);
+        assertEquals(mysqlCharacter.getName(), "mr_twardowski");
+        assertEquals(mysqlCharacter.getPictureUrl(), "http://test_pic.jpg");
+        assertEquals(mysqlCharacter.getHomeworld(), homeworld);
+
     }
 }

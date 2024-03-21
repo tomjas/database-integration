@@ -8,5 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface MysqlCharacterRepository extends JpaRepository<MysqlCharacter, Long> {
+    Optional<MysqlCharacter> findById(Long id);
+
     Optional<MysqlCharacter> findByName(String name);
 }
