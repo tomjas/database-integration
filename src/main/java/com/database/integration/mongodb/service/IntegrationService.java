@@ -1,9 +1,9 @@
 package com.database.integration.mongodb.service;
 
 
-import com.database.integration.kafka.service.Producer;
-import com.database.integration.mysql.importer.dto.MonogCharacterDto;
-import com.database.integration.mysql.model.MysqlCharacter;
+import com.database.integration.kafka.service.KafkaProducer;
+import com.database.integration.mysql.importer.dto.SwCharacterOutDto;
+import com.database.integration.mysql.model.SwCharacter;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +16,15 @@ import java.util.List;
 @Slf4j
 public class IntegrationService {
 
-    private final Producer producer;
+    private final KafkaProducer producer;
 
-    public void send(List<MysqlCharacter> mysqlCharacters) {
-        List<MonogCharacterDto> monogCharacterDtos = DataMapper.mysqlToMongo(mysqlCharacters);
-        monogCharacterDtos.forEach(producer::send);
+    public void send(List<SwCharacter> swCharacters) {
+        List<SwCharacterOutDto> swCharacterOutDtos = DataMapper.mysqlToMongo(swCharacters);
+        swCharacterOutDtos.forEach(producer::send);
     }
 
-    public void send(MysqlCharacter mysqlCharacter) {
-        MonogCharacterDto mongoCharacter = DataMapper.mysqlToMongo(mysqlCharacter);
+    public void send(SwCharacter swCharacter) {
+        SwCharacterOutDto mongoCharacter = DataMapper.mysqlToMongo(swCharacter);
         producer.send(mongoCharacter);
     }
 }

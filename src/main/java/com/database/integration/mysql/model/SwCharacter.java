@@ -7,33 +7,38 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
+import lombok.ToString;
 
 @Entity
-@Table(name = "sw_homeworld")
+@Table(name = "sw_character")
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 @Data
-public class MysqlHomeworld {
+public class SwCharacter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "homeworld")
-    @JsonIgnoreProperties("homeworld")
-    @EqualsAndHashCode.Exclude
-    private Set<MysqlCharacter> characters;
+    @Column(name = "picture_url")
+    private String pictureUrl;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "sw_homeworld_id")
+    @JsonIgnoreProperties("characters")
+    @ToString.Exclude
+    private SwHomeworld homeworld;
+
 }

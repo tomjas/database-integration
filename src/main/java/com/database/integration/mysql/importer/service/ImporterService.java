@@ -1,10 +1,10 @@
 package com.database.integration.mysql.importer.service;
 
-import com.database.integration.mysql.importer.dto.CharacterListDto;
-import com.database.integration.mysql.model.MysqlCharacter;
-import com.database.integration.mysql.model.MysqlHomeworld;
-import com.database.integration.mysql.repository.MysqlCharacterRepository;
-import com.database.integration.mysql.repository.MysqlHomeworldRepository;
+import com.database.integration.mysql.importer.dto.SwCharacterWrapperDto;
+import com.database.integration.mysql.model.SwHomeworld;
+import com.database.integration.mysql.model.SwCharacter;
+import com.database.integration.mysql.repository.SwCharacterRepository;
+import com.database.integration.mysql.repository.SwHomeworldRepository;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,31 +20,31 @@ import java.util.Set;
 @Slf4j
 public class ImporterService {
 
-    private final MysqlHomeworldRepository homeworldRepository;
-    private final MysqlCharacterRepository characterRepository;
+    private final SwHomeworldRepository homeworldRepository;
+    private final SwCharacterRepository characterRepository;
 
     @Transactional
-    public void persist(CharacterListDto characterListDto) {
-        Set<MysqlHomeworld> mysqlHomeworlds = DataMapper.getHomeworlds(characterListDto);
-        Set<MysqlHomeworld> persistedHomeworlds = persistHomeworlds(mysqlHomeworlds);
-        Set<MysqlCharacter> persistedCharacters = persistCharacters(characterListDto, persistedHomeworlds);
-        log.debug("Imported Star Wars {} homewrolds and {} characters", persistedHomeworlds.size(), persistedCharacters.size());
+    public void persist(SwCharacterWrapperDto wrapperDto) {
+        Set<SwHomeworld> homeworlds = DataMapper.getHomeworlds(wrapperDto);
+        Set<SwHomeworld> persistedHomeworlds = persistHomeworlds(homeworlds);
+        Set<SwCharacter> persistedCharacters = persistCharacters(wrapperDto, persistedHomeworlds);
+        log.debug("Imported Star Wars {} homeworlds and {} characters", persistedHomeworlds.size(), persistedCharacters.size());
     }
 
-    private Set<MysqlCharacter> persistCharacters(CharacterListDto characterListDto, Set<MysqlHomeworld> persistedSet) {
-        Map<String, MysqlHomeworld> homeworldMap = DataMapper.asMap(persistedSet);
-        Set<MysqlCharacter> characters = DataMapper.asMysqlCharacters(characterListDto, homeworldMap);
-        for (MysqlCharacter character : characters) {
+    private Set<SwCharacter> persistCharacters(SwCharacterWrapperDto wrapperDto, Set<SwHomeworld> persistedSet) {
+        Map<String, SwHomeworld> homeworldMap = DataMapper.asMap(persistedSet);
+        Set<SwCharacter> characters = DataMapper.asSwCharacters(wrapperDto, homeworldMap);
+        for (SwCharacter character : characters) {
             characterRepository.findByName(character.getName()).ifPresent(v -> character.setId(v.getId()));
         }
         return characters;
     }
 
-    private Set<MysqlHomeworld> persistHomeworlds(Set<MysqlHomeworld> mysqlHomeworlds) {
-        Set<MysqlHomeworld> persistedSet = new HashSet<>();
-        for (MysqlHomeworld mysqlHomeworld : mysqlHomeworlds) {
-            homeworldRepository.findByName(mysqlHomeworld.getName()).ifPresent(v -> mysqlHomeworld.setId(v.getId()));
-            MysqlHomeworld persisted = homeworldRepository.save(mysqlHomeworld);
+    private Set<SwHomeworld> persistHomeworlds(Set<SwHomeworld> homeworlds) {
+        Set<SwHomeworld> persistedSet = new HashSet<>();
+        for (SwHomeworld swHomeworld : homeworlds) {
+            homeworldRepository.findByName(swHomeworld.getName()).ifPresent(v -> swHomeworld.setId(v.getId()));
+            SwHomeworld persisted = homeworldRepository.save(swHomeworld);
             persistedSet.add(persisted);
         }
         return persistedSet;

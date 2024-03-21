@@ -1,9 +1,9 @@
 package com.database.integration.controller;
 
-import com.database.integration.mysql.importer.dto.CharacterDto;
-import com.database.integration.mysql.importer.service.MysqlCharacterService;
-import com.database.integration.mysql.model.MysqlCharacter;
-import com.database.integration.mysql.model.MysqlHomeworld;
+import com.database.integration.mysql.importer.dto.SwCharacterInDto;
+import com.database.integration.mysql.importer.service.SwCharacterService;
+import com.database.integration.mysql.model.SwCharacter;
+import com.database.integration.mysql.model.SwHomeworld;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,28 +19,28 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1.0")
 @RequiredArgsConstructor
-public class CharacterController {
+public class SwCharacterController {
 
-    private final MysqlCharacterService mysqlCharacterService;
+    private final SwCharacterService swCharacterService;
 
     @GetMapping(value = "/mysql/characters")
-    public List<MysqlCharacter> getMysqlCharacters() {
-        return mysqlCharacterService.getCharacters();
+    public List<SwCharacter> getCharacters() {
+        return swCharacterService.getCharacters();
     }
 
     @GetMapping(value = "/mysql/homeworlds")
-    public List<MysqlHomeworld> getMysqlHomeworlds() {
-        return mysqlCharacterService.getHomeworlds();
+    public List<SwHomeworld> getHomeworlds() {
+        return swCharacterService.getHomeworlds();
     }
 
     @PostMapping(value = "/mysql/add")
-    public MysqlCharacter add(@Valid @RequestBody CharacterDto dto) {
-        return mysqlCharacterService.add(dto);
+    public SwCharacter add(@Valid @RequestBody SwCharacterInDto dto) {
+        return swCharacterService.add(dto);
     }
 
     @PutMapping(value = "/mysql/characters/{id}")
-    public MysqlCharacter update(@Valid @RequestBody CharacterDto dto, @PathVariable Long id) {
-        return mysqlCharacterService.update(dto, id);
+    public SwCharacter update(@Valid @RequestBody SwCharacterInDto dto, @PathVariable Long id) {
+        return swCharacterService.update(dto, id);
     }
 
 }

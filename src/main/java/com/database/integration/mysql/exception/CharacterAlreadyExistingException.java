@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class UserAlreadyExistingException extends RuntimeException {
-    public UserAlreadyExistingException(String message) {
+public class CharacterAlreadyExistingException extends RuntimeException {
+    public CharacterAlreadyExistingException(String message) {
         super(message);
     }
 }

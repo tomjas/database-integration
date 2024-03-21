@@ -1,9 +1,9 @@
 package com.database.integration.mysql.importer.service;
 
 import com.database.integration.mongodb.service.IntegrationService;
-import com.database.integration.mysql.importer.dto.CharacterListDto;
-import com.database.integration.mysql.model.MysqlCharacter;
-import com.database.integration.mysql.repository.MysqlCharacterRepository;
+import com.database.integration.mysql.importer.dto.SwCharacterWrapperDto;
+import com.database.integration.mysql.model.SwCharacter;
+import com.database.integration.mysql.repository.SwCharacterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -18,14 +18,14 @@ public class ImporterStartup implements CommandLineRunner {
 
     private final ImporterService importerService;
     private final IntegrationService integrationService;
-    private final MysqlCharacterRepository mysqlRepository;
+    private final SwCharacterRepository repository;
     private final DataReader reader;
 
     @Override
     public void run(String... args) throws Exception {
-        CharacterListDto characterListDto = reader.read();
-        importerService.persist(characterListDto);
-        List<MysqlCharacter> mysqlCharacters = mysqlRepository.findAll();
-        integrationService.send(mysqlCharacters);
+        SwCharacterWrapperDto swCharacterListDto = reader.read();
+        importerService.persist(swCharacterListDto);
+        List<SwCharacter> swCharacters = repository.findAll();
+        integrationService.send(swCharacters);
     }
 }

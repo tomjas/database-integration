@@ -1,10 +1,10 @@
 package com.database.integration.util;
 
-import com.database.integration.mysql.importer.dto.CharacterDto;
-import com.database.integration.mysql.importer.dto.CharacterListDto;
-import com.database.integration.mysql.importer.dto.MonogCharacterDto;
-import com.database.integration.mysql.model.MysqlCharacter;
-import com.database.integration.mysql.model.MysqlHomeworld;
+import com.database.integration.mysql.importer.dto.SwCharacterInDto;
+import com.database.integration.mysql.importer.dto.SwCharacterWrapperDto;
+import com.database.integration.mysql.importer.dto.SwCharacterOutDto;
+import com.database.integration.mysql.model.SwHomeworld;
+import com.database.integration.mysql.model.SwCharacter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -23,27 +23,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DataMapperTest {
 
-    private CharacterDto characterDto;
-    private MysqlCharacter mysqlCharacter;
+    private SwCharacterInDto dto;
+    private SwCharacter character;
 
     @BeforeEach
     void setUp() {
-        characterDto = new CharacterDto(0L, "mr_twardowski", "http://test_pic.jpg", "moon");
+        dto = new SwCharacterInDto(0L, "mr_twardowski", "http://test_pic.jpg", "moon");
 
-        mysqlCharacter = new MysqlCharacter();
-        mysqlCharacter.setId(1L);
-        mysqlCharacter.setName("mr_twardowski");
-        mysqlCharacter.setPictureUrl("http://test_pic.jpg");
+        character = new SwCharacter();
+        character.setId(1L);
+        character.setName("mr_twardowski");
+        character.setPictureUrl("http://test_pic.jpg");
 
-        MysqlHomeworld homeworld = new MysqlHomeworld();
+        SwHomeworld homeworld = new SwHomeworld();
         homeworld.setId(2L);
         homeworld.setName("moon");
-        mysqlCharacter.setHomeworld(homeworld);
+        character.setHomeworld(homeworld);
     }
 
     @Test
     void mysqlToMongoList() {
-        List<MonogCharacterDto> expected = DataMapper.mysqlToMongo(Collections.singletonList(mysqlCharacter));
+        List<SwCharacterOutDto> expected = DataMapper.mysqlToMongo(Collections.singletonList(character));
         assertEquals(expected.size(), 1);
         assertEquals(expected.get(0).getName(), "mr_twardowski");
         assertEquals(expected.get(0).getPictureUrl(), "http://test_pic.jpg");
@@ -53,7 +53,7 @@ class DataMapperTest {
 
     @Test
     void shouldMapCharacterDtoToMysqlCharacter() {
-        MysqlCharacter expected = DataMapper.map(characterDto);
+        SwCharacter expected = DataMapper.map(dto);
         assertEquals(expected.getName(), "mr_twardowski");
         assertEquals(expected.getPictureUrl(), "http://test_pic.jpg");
         assertNotNull(expected.getHomeworld());
@@ -62,7 +62,7 @@ class DataMapperTest {
 
     @Test
     void testMysqlToMongoSingle() {
-        MonogCharacterDto expected = DataMapper.mysqlToMongo(mysqlCharacter);
+        SwCharacterOutDto expected = DataMapper.mysqlToMongo(character);
         assertEquals(expected.getName(), "mr_twardowski");
         assertEquals(expected.getPictureUrl(), "http://test_pic.jpg");
         assertEquals(expected.getHomeworld(), "moon");
@@ -72,7 +72,7 @@ class DataMapperTest {
     @Test
     void getHomeworld() {
         String name = "moon";
-        MysqlHomeworld expected = DataMapper.getHomeworld(name);
+        SwHomeworld expected = DataMapper.getHomeworld(name);
         assertEquals(expected.getName(), "moon");
 
         name = null;
@@ -82,9 +82,9 @@ class DataMapperTest {
 
     @Test
     void getHomeworlds() {
-        CharacterListDto listDto = new CharacterListDto(new ArrayList<>());
-        listDto.characters().add(characterDto);
-        List<MysqlHomeworld> expected = DataMapper.getHomeworlds(listDto).stream().toList();
+        SwCharacterWrapperDto wrapperDto = new SwCharacterWrapperDto(new ArrayList<>());
+        wrapperDto.characters().add(dto);
+        List<SwHomeworld> expected = DataMapper.getHomeworlds(wrapperDto).stream().toList();
 
         assertEquals(expected.size(), 1);
         assertEquals(expected.get(0).getName(), "moon");
@@ -92,28 +92,28 @@ class DataMapperTest {
 
     @Test
     void asMap() {
-        MysqlHomeworld h1 = new MysqlHomeworld();
+        SwHomeworld h1 = new SwHomeworld();
         h1.setId(1L);
         h1.setName("moon");
 
-        MysqlHomeworld h2 = new MysqlHomeworld();
+        SwHomeworld h2 = new SwHomeworld();
         h2.setId(2L);
         h2.setName("earth");
 
-        Set<MysqlHomeworld> homeworlds = new HashSet<>(){{
+        Set<SwHomeworld> homeworlds = new HashSet<>(){{
             add(h1);
             add(h2);
         }};
 
-        Map<String, MysqlHomeworld> expected = DataMapper.asMap(homeworlds);
+        Map<String, SwHomeworld> expected = DataMapper.asMap(homeworlds);
         assertNotNull(expected);
         assertEquals(expected.size(), 2);
         assertTrue(expected.containsKey("moon"));
         assertTrue(expected.containsKey("earth"));
         assertEquals(expected.get("moon"),
-                MysqlHomeworld.builder().id(1L).name("moon").characters(Collections.emptySet()).build());
+                SwHomeworld.builder().id(1L).name("moon").characters(Collections.emptySet()).build());
         assertEquals(expected.get("earth"),
-                MysqlHomeworld.builder().id(2L).name("earth").characters(Collections.emptySet()).build());
+                SwHomeworld.builder().id(2L).name("earth").characters(Collections.emptySet()).build());
 
     }
 
@@ -121,15 +121,15 @@ class DataMapperTest {
     //TODO
     @Disabled
     void asMysqlCharacters() {
-        MysqlHomeworld h1 = new MysqlHomeworld();
+        SwHomeworld h1 = new SwHomeworld();
         h1.setId(1L);
         h1.setName("moon");
 
-        MysqlHomeworld h2 = new MysqlHomeworld();
+        SwHomeworld h2 = new SwHomeworld();
         h2.setId(2L);
         h2.setName("earth");
 
-        Set<MysqlHomeworld> homeworlds = new HashSet<>(){{
+        Set<SwHomeworld> homeworlds = new HashSet<>(){{
             add(h1);
             add(h2);
         }};
@@ -140,30 +140,30 @@ class DataMapperTest {
 
     @Test
     void shouldMapWithoutHomeworldProvided(){
-        CharacterDto dto = new CharacterDto(1L, "mr_twardowski", "http://test_pic.jpg", null);
-        MysqlCharacter mysqlCharacter = DataMapper.map(dto);
-        assertEquals(mysqlCharacter.getName(), "mr_twardowski");
-        assertEquals(mysqlCharacter.getPictureUrl(), "http://test_pic.jpg");
-        assertNull(mysqlCharacter.getHomeworld());
+        SwCharacterInDto dto = new SwCharacterInDto(1L, "mr_twardowski", "http://test_pic.jpg", null);
+        SwCharacter character = DataMapper.map(dto);
+        assertEquals(character.getName(), "mr_twardowski");
+        assertEquals(character.getPictureUrl(), "http://test_pic.jpg");
+        assertNull(character.getHomeworld());
 
-        dto = new CharacterDto(1L, "mr_twardowski", "http://test_pic.jpg", "moon");
-        MysqlHomeworld homeworld = MysqlHomeworld.builder().name("moon").build();
-        mysqlCharacter = DataMapper.map(dto);
-        assertEquals(mysqlCharacter.getName(), "mr_twardowski");
-        assertEquals(mysqlCharacter.getPictureUrl(), "http://test_pic.jpg");
-        assertEquals(mysqlCharacter.getHomeworld(), homeworld);
+        dto = new SwCharacterInDto(1L, "mr_twardowski", "http://test_pic.jpg", "moon");
+        SwHomeworld homeworld = SwHomeworld.builder().name("moon").build();
+        character = DataMapper.map(dto);
+        assertEquals(character.getName(), "mr_twardowski");
+        assertEquals(character.getPictureUrl(), "http://test_pic.jpg");
+        assertEquals(character.getHomeworld(), homeworld);
 
     }
 
     @Test
     void shouldMapWithHomeworldProvided(){
-        CharacterDto dto = new CharacterDto(1L, "mr_twardowski", "http://test_pic.jpg", null);
-        MysqlHomeworld homeworld = MysqlHomeworld.builder().name("moon").build();
-        MysqlCharacter mysqlCharacter = DataMapper.map(dto);
-        mysqlCharacter.setHomeworld(homeworld);
-        assertEquals(mysqlCharacter.getName(), "mr_twardowski");
-        assertEquals(mysqlCharacter.getPictureUrl(), "http://test_pic.jpg");
-        assertEquals(mysqlCharacter.getHomeworld(), homeworld);
+        SwCharacterInDto dto = new SwCharacterInDto(1L, "mr_twardowski", "http://test_pic.jpg", null);
+        SwHomeworld homeworld = SwHomeworld.builder().name("moon").build();
+        SwCharacter character = DataMapper.map(dto);
+        character.setHomeworld(homeworld);
+        assertEquals(character.getName(), "mr_twardowski");
+        assertEquals(character.getPictureUrl(), "http://test_pic.jpg");
+        assertEquals(character.getHomeworld(), homeworld);
 
     }
 }

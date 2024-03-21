@@ -1,10 +1,10 @@
 package com.database.integration.util;
 
-import com.database.integration.mysql.importer.dto.CharacterDto;
-import com.database.integration.mysql.importer.dto.CharacterListDto;
-import com.database.integration.mysql.importer.dto.MonogCharacterDto;
-import com.database.integration.mysql.model.MysqlCharacter;
-import com.database.integration.mysql.model.MysqlHomeworld;
+import com.database.integration.mysql.importer.dto.SwCharacterInDto;
+import com.database.integration.mysql.importer.dto.SwCharacterWrapperDto;
+import com.database.integration.mysql.importer.dto.SwCharacterOutDto;
+import com.database.integration.mysql.model.SwHomeworld;
+import com.database.integration.mysql.model.SwCharacter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -19,47 +19,47 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataMapper {
 
-    public static Set<MysqlHomeworld> getHomeworlds(CharacterListDto listDto) {
-        Set<String> names = listDto.characters().stream().map(CharacterDto::homeworld).collect(Collectors.toSet());
+    public static Set<SwHomeworld> getHomeworlds(SwCharacterWrapperDto wrapperDto) {
+        Set<String> names = wrapperDto.characters().stream().map(SwCharacterInDto::homeworld).collect(Collectors.toSet());
         return names.stream().map(DataMapper::getHomeworld).collect(Collectors.toSet());
     }
 
-    public static MysqlHomeworld getHomeworld(String name) {
+    public static SwHomeworld getHomeworld(String name) {
         if (!StringUtils.hasText(name)) {
-            return new MysqlHomeworld();
+            return new SwHomeworld();
         }
         return HomeworldMapper.INSTANCE.map(name);
     }
 
-    public static MysqlCharacter map(CharacterDto dto) {
+    public static SwCharacter map(SwCharacterInDto dto) {
         return map(dto, null);
     }
 
-    public static MysqlCharacter map(CharacterDto characterDto, MysqlHomeworld homeworld) {
-        MysqlCharacter result = CharacterMapper.INSTANCE.characterDtoToMysql(characterDto);
+    public static SwCharacter map(SwCharacterInDto dto, SwHomeworld homeworld) {
+        SwCharacter result = SwCharacterMapper.INSTANCE.inDtoToSwCharacter(dto);
         if (Objects.isNull(homeworld)) {
-            homeworld = HomeworldMapper.INSTANCE.map(characterDto.homeworld());
+            homeworld = HomeworldMapper.INSTANCE.map(dto.homeworld());
         }
         result.setHomeworld(homeworld);
         return result;
     }
 
-    public static List<MonogCharacterDto> mysqlToMongo(List<MysqlCharacter> mysqlCharacters) {
-        return CharacterMapper.INSTANCE.mysqlToMongo(mysqlCharacters);
+    public static List<SwCharacterOutDto> mysqlToMongo(List<SwCharacter> characters) {
+        return SwCharacterMapper.INSTANCE.swCharacterToOutDto(characters);
     }
 
-    public static MonogCharacterDto mysqlToMongo(MysqlCharacter mysqlCharacter) {
-        return CharacterMapper.INSTANCE.mysqlToMongo(mysqlCharacter);
+    public static SwCharacterOutDto mysqlToMongo(SwCharacter character) {
+        return SwCharacterMapper.INSTANCE.swCharacterToOutDto(character);
     }
 
-    public static Map<String, MysqlHomeworld> asMap(Set<MysqlHomeworld> homeworlds) {
-        return homeworlds.stream().collect(Collectors.toMap(MysqlHomeworld::getName, Function.identity()));
+    public static Map<String, SwHomeworld> asMap(Set<SwHomeworld> homeworlds) {
+        return homeworlds.stream().collect(Collectors.toMap(SwHomeworld::getName, Function.identity()));
     }
 
     //TODO test
-    public static Set<MysqlCharacter> asMysqlCharacters(CharacterListDto listDto, Map<String, MysqlHomeworld> map) {
-        return listDto.characters().stream().map(v -> {
-            MysqlCharacter character = CharacterMapper.INSTANCE.characterDtoToMysql(v);
+    public static Set<SwCharacter> asSwCharacters(SwCharacterWrapperDto wrapperDto, Map<String, SwHomeworld> map) {
+        return wrapperDto.characters().stream().map(v -> {
+            SwCharacter character = SwCharacterMapper.INSTANCE.inDtoToSwCharacter(v);
             character.setHomeworld(map.get(v.homeworld()));
             return character;
         }).collect(Collectors.toSet());

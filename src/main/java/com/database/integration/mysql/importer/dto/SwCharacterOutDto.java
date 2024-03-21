@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class MonogCharacterDto {
-
+public class SwCharacterOutDto {
     private Long mysqlId;
     private String name;
     private String pictureUrl;
