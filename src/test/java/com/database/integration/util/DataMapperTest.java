@@ -110,9 +110,9 @@ class DataMapperTest {
         assertTrue(expected.containsKey("moon"));
         assertTrue(expected.containsKey("earth"));
         assertEquals(expected.get("moon"),
-                MysqlHomeworld.builder().id(1L).name("moon").characters(Collections.emptyList()).build());
+                MysqlHomeworld.builder().id(1L).name("moon").characters(Collections.emptySet()).build());
         assertEquals(expected.get("earth"),
-                MysqlHomeworld.builder().id(2L).name("earth").characters(Collections.emptyList()).build());
+                MysqlHomeworld.builder().id(2L).name("earth").characters(Collections.emptySet()).build());
 
     }
 

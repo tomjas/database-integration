@@ -12,10 +12,10 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sw_homeworld")
@@ -34,5 +34,6 @@ public class MysqlHomeworld {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "homeworld")
     @JsonIgnoreProperties("homeworld")
-    private List<MysqlCharacter> characters = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    private Set<MysqlCharacter> characters;
 }
