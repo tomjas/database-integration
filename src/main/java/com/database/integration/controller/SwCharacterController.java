@@ -23,22 +23,22 @@ public class SwCharacterController {
 
     private final SwCharacterService swCharacterService;
 
-    @GetMapping(value = "/mysql/characters")
+    @GetMapping(value = "/characters")
     public List<SwCharacter> getCharacters() {
         return swCharacterService.getCharacters();
     }
 
-    @GetMapping(value = "/mysql/homeworlds")
+    @GetMapping(value = "/homeworlds")
     public List<SwHomeworld> getHomeworlds() {
         return swCharacterService.getHomeworlds();
     }
 
-    @PostMapping(value = "/mysql/add")
+    @PostMapping(value = "/add")
     public SwCharacter add(@Valid @RequestBody SwCharacterInDto dto) {
         return swCharacterService.add(dto);
     }
 
-    @PutMapping(value = "/mysql/characters/{id}")
+    @PutMapping(value = "/characters/id/{id}")
     public SwCharacter update(@Valid @RequestBody SwCharacterInDto dto, @PathVariable Long id) {
         return swCharacterService.update(dto, id);
     }
