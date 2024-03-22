@@ -1,13 +1,12 @@
 package com.database.integration.mysql.importer.service;
 
 import com.database.integration.mongodb.service.IntegrationService;
-import com.database.integration.mysql.exception.NoSuchCharacterException;
 import com.database.integration.mysql.exception.CharacterAlreadyExistingException;
+import com.database.integration.mysql.exception.NoSuchCharacterException;
 import com.database.integration.mysql.importer.dto.SwCharacterInDto;
 import com.database.integration.mysql.model.SwCharacter;
 import com.database.integration.mysql.model.SwHomeworld;
 import com.database.integration.mysql.repository.SwCharacterRepository;
-import com.database.integration.mysql.repository.SwHomeworldRepository;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,15 +20,11 @@ import java.util.Optional;
 public class SwCharacterService {
 
     private final SwCharacterRepository characterRepository;
-    private final SwHomeworldRepository homeworldRepository;
+    private final SwHomeworldService homeworldService;
     private final IntegrationService integrationService;
 
     public List<SwCharacter> getCharacters() {
         return characterRepository.findAll();
-    }
-
-    public List<SwHomeworld> getHomeworlds() {
-        return homeworldRepository.findAll();
     }
 
     //TODO test
@@ -39,7 +34,7 @@ public class SwCharacterService {
         if (optional.isPresent()) {
             throw new CharacterAlreadyExistingException("Character " + dto.name() + " already existing. Try update.");
         }
-        SwHomeworld homeworld = persist(dto.homeworld());
+        SwHomeworld homeworld = homeworldService.save(dto.homeworld());
         SwCharacter character = DataMapper.map(dto, homeworld);
         SwCharacter persisted = characterRepository.save(character);
         integrationService.send(persisted);
@@ -53,18 +48,18 @@ public class SwCharacterService {
         SwCharacter toSave = optional.orElseThrow(() -> new NoSuchCharacterException("No character with id " + id + ". Try add."));
         toSave.setName(dto.name());
         toSave.setPictureUrl(dto.pic());
-        SwHomeworld homeworld = persist(dto.homeworld());
+        SwHomeworld homeworld = homeworldService.save(dto.homeworld());
         toSave.setHomeworld(homeworld);
         SwCharacter saved = characterRepository.save(toSave);
         integrationService.send(saved);
         return saved;
     }
 
-    private SwHomeworld persist(String name) {
-        Optional<SwHomeworld> homeworld = homeworldRepository.findByName(name);
-        return homeworld.orElseGet(() -> {
-            SwHomeworld toSave = DataMapper.getHomeworld(name);
-            return homeworldRepository.save(toSave);
-        });
+    public SwCharacter getCharacterByName(String name) {
+        return characterRepository.findByName(name).orElseThrow(() -> new NoSuchCharacterException("No character with name " + name));
+    }
+
+    public SwCharacter getCharacterById(Long id) {
+        return characterRepository.findById(id).orElseThrow(() -> new NoSuchCharacterException("No character with id " + id));
     }
 }
