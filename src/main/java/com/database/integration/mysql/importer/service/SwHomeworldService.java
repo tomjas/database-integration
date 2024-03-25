@@ -5,10 +5,12 @@ import com.database.integration.mysql.model.SwHomeworld;
 import com.database.integration.mysql.repository.SwHomeworldRepository;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +18,15 @@ public class SwHomeworldService {
 
     private final SwHomeworldRepository homeworldRepository;
 
-    public List<SwHomeworld> getHomeworlds() {
+    public List<SwHomeworld> getHomeworlds(String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return getHomeworldByName(name);
+        }
         return homeworldRepository.findAll();
     }
 
-    public SwHomeworld getHomeworldByName(String name) {
-        return homeworldRepository.findByName(name).orElseThrow(() -> new NoSuchWorldException("No world with name " + name));
+    public List<SwHomeworld> getHomeworldByName(String name) {
+        return homeworldRepository.findByName(name).stream().collect(Collectors.toList());
     }
 
     public SwHomeworld getHomeworldById(Long id) {

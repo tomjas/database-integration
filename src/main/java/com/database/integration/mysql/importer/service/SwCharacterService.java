@@ -9,11 +9,13 @@ import com.database.integration.mysql.model.SwHomeworld;
 import com.database.integration.mysql.repository.SwCharacterRepository;
 import com.database.integration.util.DataMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,10 @@ public class SwCharacterService {
     private final SwHomeworldService homeworldService;
     private final IntegrationService integrationService;
 
-    public List<SwCharacter> getCharacters() {
+    public List<SwCharacter> getCharacters(String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return getCharacterByName(name);
+        }
         return characterRepository.findAll();
     }
 
@@ -55,8 +60,8 @@ public class SwCharacterService {
         return saved;
     }
 
-    public SwCharacter getCharacterByName(String name) {
-        return characterRepository.findByName(name).orElseThrow(() -> new NoSuchCharacterException("No character with name " + name));
+    public List<SwCharacter> getCharacterByName(String name) {
+        return characterRepository.findByName(name).stream().collect(Collectors.toList());
     }
 
     public SwCharacter getCharacterById(Long id) {

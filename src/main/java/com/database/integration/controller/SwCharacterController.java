@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,41 +27,31 @@ public class SwCharacterController {
     private final SwHomeworldService homeworldService;
 
     @GetMapping(value = "/characters")
-    public List<SwCharacter> getCharacters() {
-        return characterService.getCharacters();
+    public List<SwCharacter> getCharacters(@RequestParam(required = false) String name) {
+        return characterService.getCharacters(name);
     }
 
-    @GetMapping(value = "/characters/name/{name}")
-    public SwCharacter getCharacterByName(@PathVariable String name) {
-        return characterService.getCharacterByName(name);
-    }
-
-    @GetMapping(value = "/characters/id/{id}")
+    @GetMapping(value = "/characters/{id}")
     public SwCharacter getCharacterById(@PathVariable Long id) {
         return characterService.getCharacterById(id);
     }
 
     @GetMapping(value = "/homeworlds")
-    public List<SwHomeworld> getHomeworlds() {
-        return homeworldService.getHomeworlds();
+    public List<SwHomeworld> getHomeworlds(@RequestParam(required = false) String name) {
+        return homeworldService.getHomeworlds(name);
     }
 
-    @GetMapping(value = "/homeworlds/name/{name}")
-    public SwHomeworld getHomeworldByName(@PathVariable String name) {
-        return homeworldService.getHomeworldByName(name);
-    }
-
-    @GetMapping(value = "/homeworlds/id/{id}")
+    @GetMapping(value = "/homeworlds/{id}")
     public SwHomeworld getHomeworldById(@PathVariable Long id) {
         return homeworldService.getHomeworldById(id);
     }
 
-    @PostMapping(value = "/characters/add")
+    @PostMapping(value = "/characters")
     public SwCharacter add(@Valid @RequestBody SwCharacterInDto dto) {
         return characterService.add(dto);
     }
 
-    @PutMapping(value = "/characters/id/{id}")
+    @PutMapping(value = "/characters/{id}")
     public SwCharacter update(@Valid @RequestBody SwCharacterInDto dto, @PathVariable Long id) {
         return characterService.update(dto, id);
     }
