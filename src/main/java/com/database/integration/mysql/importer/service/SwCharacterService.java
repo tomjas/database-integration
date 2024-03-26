@@ -32,7 +32,6 @@ public class SwCharacterService {
         return characterRepository.findAll();
     }
 
-    //TODO test
     @Transactional
     public SwCharacter add(SwCharacterInDto dto) {
         Optional<SwCharacter> optional = characterRepository.findByName(dto.name());
@@ -46,7 +45,6 @@ public class SwCharacterService {
         return persisted;
     }
 
-    //TODO test
     @Transactional
     public SwCharacter update(SwCharacterInDto dto, Long id) {
         Optional<SwCharacter> optional = characterRepository.findById(id);
